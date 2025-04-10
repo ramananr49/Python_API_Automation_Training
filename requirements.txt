@@ -2,3 +2,4 @@ behave
 requests
 allure-behave
 allure-python-commons
+mysql-connector-python
