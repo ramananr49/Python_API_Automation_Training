@@ -1,0 +1,4 @@
+behave
+requests
+allure-behave
+allure-python-commons
