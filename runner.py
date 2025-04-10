@@ -4,11 +4,12 @@ import subprocess
 import webbrowser
 from datetime import datetime
 
+
 def run_behave_with_allure():
     # Generate date and time for folder structure
     current_time = datetime.now()
     date_str = current_time.strftime("%Y-%m-%d")
-    time_str = current_time.strftime("%I-%M-%S %p")
+    time_str = current_time.strftime("%I-%M-%S-%p")
     result_dir = f"reports/{date_str}/{time_str}"
     allure_results = "reports/allure-results"
 
@@ -19,7 +20,7 @@ def run_behave_with_allure():
 
     # Step 1: Run Behave tests and generate Allure results
     print("[INFO] Running Behave tests...")
-    behave_cmd  = [
+    behave_cmd = [
         "behave", "--no-capture",
         "-f", "allure_behave.formatter:AllureFormatter",
         "-o", allure_results
@@ -45,6 +46,7 @@ def run_behave_with_allure():
     subprocess.run(allure_cmd, check=True)
 
     print(f"✅ [SUCCESS] Report available at {result_dir}/index.html")
+
 
 if __name__ == "__main__":
     try:

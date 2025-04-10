@@ -1,8 +1,8 @@
-venv/
+venv\
 __pycache__/
 *.pyc
-#reports/
-#allure-results/
-#allure-report/
+/reports/*
+allure-results/
+allure-report/
 .idea/
 .DS_Store
