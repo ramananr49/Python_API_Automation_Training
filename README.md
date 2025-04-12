@@ -41,6 +41,8 @@ All dependencies are listed in `requirements.txt`. Main tools used:
 | Task                    | Command                         |
 |-------------------------|----------------------------------|
 | Run tests               | `python run_tests.py`           |
+| Run Specific tags       | `python runner.py -t "tag_name"` |
+| Run test by name        | `python runner.py -n "testcase_name"` |
 | Reinstall dependencies  | `pip install -r requirements.txt` |
 | Activate venv manually  | `venv\Scripts\activate`         |
 
