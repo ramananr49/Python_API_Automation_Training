@@ -2,11 +2,10 @@ import argparse
 import os
 import shutil
 import subprocess
-import webbrowser
 from datetime import datetime
 
 
-def run_behave_with_allure(tags=None, name=None):
+def run_behave_with_allure(tags=None, name=None, feature=None):
     # Generate date and time for folder structure
     current_time = datetime.now()
     date_str = current_time.strftime("%Y-%m-%d")
@@ -27,7 +26,8 @@ def run_behave_with_allure(tags=None, name=None):
         "-f", "allure_behave.formatter:AllureFormatter",
         "-o", allure_results
     ]
-
+    if feature:
+        behave_cmd.insert(1, feature)  # insert after "behave"
     if tags:
         behave_cmd.extend(["-t", tags])
     if name:
@@ -60,9 +60,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Behave BDD with optional tags and/or names")
     parser.add_argument("-t", "--tags", action="store", help="Tags to filter Behave scenarios", default=None)
     parser.add_argument("-n", "--name", action="store", help="Name to run specific scenario", default=None)
+    parser.add_argument("-f", "--feature", action="store", help="Path to specific feature file", default=None)
     args = parser.parse_args()
 
     try:
-        report_path = run_behave_with_allure(tags=args.tags, name=args.name)
+        report_path = run_behave_with_allure(tags=args.tags, name=args.name, feature=args.feature)
     except subprocess.CalledProcessError as e:
         print(f"[ERROR] Test execution failed: {e}")

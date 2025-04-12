@@ -15,7 +15,6 @@ Feature: Library API Test with Requests
       |RRAY0022 |
       |RRAY0023 |
 
-  @focus
   Scenario: Validate Add Book API
     Given the Add Book API is available
     When execute the post request to add the book
