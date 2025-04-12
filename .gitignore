@@ -2,7 +2,6 @@ venv\
 __pycache__/
 *.pyc
 /reports/*
-allure-results/
-allure-report/
+/allure-results/*
 .idea/
 .DS_Store
