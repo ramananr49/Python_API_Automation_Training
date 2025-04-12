@@ -1,10 +1,14 @@
 import json
-
 import allure
 import requests
+import sys
+import os
 from behave import given, when, then
 from utilities.configurations import *
 from utilities.resources import APIResources
+from utilities.utils import *
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
 @given("the GitHub API is available")
@@ -29,7 +33,8 @@ def step_impl(context):
 
 @given('the Get book by Author API is available')
 def step_impl(context):
-    context.get_book_by_author_url = get_config()['API']['lirary_api_base_url'] + APIResources.get_book_by_author_resource
+    context.get_book_by_author_url = get_config()['API'][
+                                         'lirary_api_base_url'] + APIResources.get_book_by_author_resource
     context.param = {"AuthorName": "Lewis Hamilton"}
     allure.attach(context.get_book_by_author_url, name="API Endpoint", attachment_type=allure.attachment_type.TEXT)
 
@@ -47,4 +52,75 @@ def step_impl(context):
 def step_impl(context):
     assert context.get_book_by_author_response.status_code == 200
     allure.attach("Assertion Passed and Status Code is 200", name="Assertion Result",
+                  attachment_type=allure.attachment_type.TEXT)
+
+
+@given('the Get Book By ID API is Available')
+def step_impl(context):
+    context.get_book_by_id_url = get_config()['API']['lirary_api_base_url'] + APIResources.get_book_by_ID_resource
+    allure.attach(context.get_book_by_id_url, name="Get Book By ID API Endpoint",
+                  attachment_type=allure.attachment_type.TEXT)
+
+
+@when('I request the book {IDs}')
+def step_impl(context, IDs):
+    context.param = {"ID": IDs}
+    context.get_book_by_id_response = requests.get(context.get_book_by_id_url, params=context.param)
+    allure.attach(str(context.get_book_by_id_response.status_code), name="Status Code",
+                  attachment_type=allure.attachment_type.TEXT)
+    allure.attach(json.dumps(context.get_book_by_id_response.json(), indent=2), name="Response Body",
+                  attachment_type=allure.attachment_type.JSON)
+
+
+@then('the response status code is 200 and desire book details fetched')
+def step_impl(context):
+    assert context.get_book_by_id_response.status_code == 200
+    allure.attach("Assertion successful and Status code is 200", name="Assertion Result",
+                  attachment_type=allure.attachment_type.TEXT)
+
+
+@given('the Add Book API is available')
+def step_impl(context):
+    context.add_book_api_url = get_config()['API']['lirary_api_base_url'] + APIResources.add_book_resource
+    context.add_book_payload = create_book_payload("Learn Cypress", "RRAY", "0011", "Lewis Hamilton")
+    allure.attach(str(context.add_book_api_url), name="Add Book API Enfpoint", attachment_type=allure.attachment_type.TEXT)
+    allure.attach(json.dumps(context.add_book_payload, indent=2), name="Request Body or Payload", attachment_type=allure.attachment_type.JSON)
+
+
+@when('execute the post request to add the book')
+def step_impl(context):
+    context.add_book_response = requests.post(context.add_book_api_url, json=context.add_book_payload)
+    allure.attach(str(context.add_book_response.status_code), name="Status Code", attachment_type=allure.attachment_type.TEXT)
+    allure.attach(json.dumps(context.add_book_response.json()), name="Response Body", attachment_type=allure.attachment_type.JSON)
+    allure.attach(str(context.add_book_response.json()['ID']), name="ID of the book", attachment_type=allure.attachment_type.TEXT)
+    context.book_ID = context.add_book_response.json()['ID']
+
+@then('the book should added successfully and status code is 200')
+def step_impl(context):
+    assert context.add_book_response.status_code == 200
+    assert context.add_book_response.json()['Msg'] == "successfully added"
+    allure.attach(f"Assertion successful, Book is created and ID of the book is {context.book_ID}", name="Assertion Result", attachment_type=allure.attachment_type.TEXT)
+
+
+@given(u'the Delete Book API is available')
+def step_impl(context):
+    context.delete_book_api_url = get_config()['API']['lirary_api_base_url'] + APIResources.delete_book_resource
+    context.delete_payload = {"ID" : context.book_ID}
+    allure.attach(context.delete_book_api_url, name="Delete Book API Endpoint", attachment_type=allure.attachment_type.TEXT)
+    allure.attach(json.dumps(context.delete_payload, indent=2), name="Request Body or Delete book API Payload", attachment_type=allure.attachment_type.JSON)
+
+
+@when(u'execute the post request to delete the book')
+def step_impl(context):
+    context.delete_book_response = requests.post(context.delete_book_api_url, json=context.delete_payload)
+    allure.attach(str(context.delete_book_response.status_code), name="Status Code", attachment_type=allure.attachment_type.TEXT)
+    allure.attach(json.dumps(context.delete_book_response.json()), name="Response Body", attachment_type=allure.attachment_type.JSON)
+
+
+@then(u'the book should deleted successfully and status code is 200')
+def step_impl(context):
+    assert context.delete_book_response.status_code == 200
+    assert context.delete_book_response.json()['msg'] == "book is successfully deleted"
+    allure.attach("Assertion successful, Book is deleted and message is " + context.delete_book_response.json()['msg'],
+                  name="Assertion Result",
                   attachment_type=allure.attachment_type.TEXT)

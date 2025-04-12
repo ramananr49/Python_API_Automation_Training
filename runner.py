@@ -1,3 +1,4 @@
+import argparse
 import os
 import shutil
 import subprocess
@@ -5,7 +6,7 @@ import webbrowser
 from datetime import datetime
 
 
-def run_behave_with_allure():
+def run_behave_with_allure(tags=None, name=None):
     # Generate date and time for folder structure
     current_time = datetime.now()
     date_str = current_time.strftime("%Y-%m-%d")
@@ -20,11 +21,18 @@ def run_behave_with_allure():
 
     # Step 1: Run Behave tests and generate Allure results
     print("[INFO] Running Behave tests...")
+
     behave_cmd = [
         "behave", "--no-capture",
         "-f", "allure_behave.formatter:AllureFormatter",
         "-o", allure_results
     ]
+
+    if tags:
+        behave_cmd.extend(["-t", tags])
+    if name:
+        behave_cmd.extend(["-n", name])
+
     subprocess.run(behave_cmd, check=True)
 
     # Add Allure to PATH manually for PyCharm
@@ -49,7 +57,12 @@ def run_behave_with_allure():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Run Behave BDD with optional tags and/or names")
+    parser.add_argument("-t", "--tags", action="store", help="Tags to filter Behave scenarios", default=None)
+    parser.add_argument("-n", "--name", action="store", help="Name to run specific scenario", default=None)
+    args = parser.parse_args()
+
     try:
-        report_path = run_behave_with_allure()
+        report_path = run_behave_with_allure(tags=args.tags, name=args.name)
     except subprocess.CalledProcessError as e:
         print(f"[ERROR] Test execution failed: {e}")
