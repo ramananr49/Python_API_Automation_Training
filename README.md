@@ -55,4 +55,4 @@ All dependencies are listed in `requirements.txt`. Main tools used:
 
 **Ramanan Ramasamy**  
 📍 Bengaluru, India  
-🔧 QA Automation Engineer | Python | BDD | CI/CD 
+🔧 QA Automation Engineer | Python | BDD | CI/CD
