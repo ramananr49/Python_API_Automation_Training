@@ -33,6 +33,7 @@ All dependencies are listed in `requirements.txt`. Main tools used:
 - `behave`
 - `requests`
 - `allure-behave`
+- `mysql-connector-python`
 
 ---
 
@@ -40,7 +41,11 @@ All dependencies are listed in `requirements.txt`. Main tools used:
 
 | Task                    | Command                         |
 |-------------------------|----------------------------------|
-| Run tests               | `python run_tests.py`           |
+| Run tests               | `python runner.py`              |
+| Run Specific feature file | `python runner.py -f features/feature-file-name` |
+| Run Specific tags       | `python runner.py -t "tag_name"` |
+| Run test by name        | `python runner.py -n "testcase_name"` |
+| Generate the step_impl methods | `behave --dry-run -f plain` |
 | Reinstall dependencies  | `pip install -r requirements.txt` |
 | Activate venv manually  | `venv\Scripts\activate`         |
 
