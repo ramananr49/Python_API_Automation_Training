@@ -33,7 +33,10 @@ def run_behave_with_allure(tags=None, name=None, feature=None):
     if name:
         behave_cmd.extend(["-n", name])
 
-    subprocess.run(behave_cmd, check=True)
+    try:
+        subprocess.run(behave_cmd, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"[WARNING] Behave exited with errors: {e}")
 
     # Add Allure to PATH manually for PyCharm
     os.environ["PATH"] += os.pathsep + r"C:\allure-2.33.0\bin"
